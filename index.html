@@ -1,101 +1,68 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>无标题文档</title>
 <style>
-.clearFix{*zoom:1}
 body,div{ margin:0; padding:0;}
-body{ background:#cd7a52;}
-.chessman{ margin-left:45px; margin-top:20px; width:184px; height:256px; position:relative; float:left; }
-.black,.white{ position:absolute; width:30px; height:30px; left:103px;   border-radius:50%; box-shadow:1px 5px 5px #000000; }
-.black{background:radial-gradient(#999, #222, #000); }
-.white{background:radial-gradient(#ccc , #eee, #fff);}
-.current{ line-height:30px;position:absolute; left:45px; font-style:normal; font-size:30px;}
-.start{ width:82px; height:30px; position:absolute; top:196px; left:64px; background:#000; color:#FFF; text-align:center; line-height:30px; border-radius:10px;}
-#chessBox{ width:1000px; height:400px;  float:right; margin-right:30px; }
-#chessBox ul{ overflow:hidden; width:100%; padding:0 3px 3px 0; position:relative;}
-#chessBox li{ float:left; width:37px; height:37px; border:3px double #000; list-style:none; margin:0 -3px -3px 0;}
+.ball{ width:500px; height:500px; background:#000; border-radius:50%; margin:0 auto}
+.ball div{ float:left; width:50%; height:50%;  border-radius:50%;}
 </style>
 </head>
 
 <body>
-<div class="chessman">
-	<i id="current" class="current" style="top: 0px;">=》</i>
-	<i class="black" style=" top:13px" ></i>
-	<i class="white"style=" top:94px" ></i>
-    <i class="start" onclick="window.location.reload();">重新开始</i>
-</div>
-
-<div id="chessBox" >
-	<ul id="QP" >
-    
-    </ul>
+<div class="ball" id="ball">
 </div>
 <script>
-var bool=true; //true为黑子下，FALSE为白字下
-var boolcurrent=document.getElementById("current");
-var chess=document.getElementById("chessBox");
-var ul=chess.getElementsByTagName("ul")[0];
-var cun=[];
-function chessBoxFun(rows){
-	var cols=25;
-	var lisp=document.createDocumentFragment();
-	/*for(var i=0;i<cols*rows;i++){
-		var li=document.createElement("li");
-		lisp.appendChild(li);
-	}*/
-	for(var i=0;i<rows;i++){
-		for(var j=0;j<cols;j++){
-			cun[j]=[];
-			var li=document.createElement("li");
-			lisp.appendChild(li);
-			cun[j][i]=false;
-			if(j==24){
-				cun[25]=[];
-				cun[25][i]=false;
-			}
-		}
+var ballNode=document.getElementById('ball');
+ballNode.onmouseover=fun;
+function fun(){
+	var frag=document.createDocumentFragment();//创建碎片
+	for(var i=0;i<4;i++){
+		var div=document.createElement('div');
+		div.style.background=colorFun();
+		
+		div.onmouseover=fun;//给创建的div绑定事件
+		
+		frag.appendChild(div);
 	}
-	ul.appendChild(lisp);
-}
-chessBoxFun(10);
-document.documentElement.onclick=function(e){
-var event=window.event|| e ;//鼠标的对象获取
-var mounsex=event.clientX;//鼠标点击后可视网页窗口的X坐标
-var mounsey=event.clientY;
-var QPnode=document.getElementById("QP");
-var QPnodex=QPnode.offsetLeft;//棋盘节点的位置指的是棋盘左上角点的位置
-var QPnodey=QPnode.offsetTop;
-var Qpwidth=QPnode.clientWidth;
-var Qpheight=QPnode.clientHeight;
-if(mounsex<QPnodex||mounsey<QPnodey||mounsex>Qpwidth+QPnodex||mounsey>QPnodey+Qpheight){ //判断鼠标下棋的位置是否在棋盘内部
-		return;
-}
-var mounseqpx=mounsex-QPnodex;
-var mounseqpy=mounsey-QPnodey;
-var qizi=40;
-var x=Math.round(mounseqpx/qizi);
-var y=Math.round(mounseqpy/qizi);
-//console.log(x,y);
-	if(cun[x][y]){
-		alert("不要！不能下这了！！！");
-		return;
-	}
-		cun[x][y]=true;
-	var span=document.createElement("span");//创建棋子
-	if(bool){
-		span.className="black";
-		boolcurrent.style.marginTop="80px";
-		bool=false;
-	}else{
-		span.className="white";
-		bool=true;
-		boolcurrent.style.marginTop="0px";
-	}
-	span.setAttribute("style","left:"+(x*40-15)+"px"+";"+"top:"+(y*40-15)+"px"+";");
-	QPnode.appendChild(span);
 	
+	this.style.background='none';//去除父节点的背景
+	this.appendChild(frag);
+	this.onmouseover=null;//销毁的事件
+}
+
+/*function colorFun(){
+	//#ffffff
+	//rgb(255,255,255)
+	var colorVal="rgb(";
+					  
+	for(var i=0;i<3;i++){
+		var rgbVal='';
+		if(i!=2)//i=0,i=1
+		{
+			rgbVal=Math.floor(Math.random()*256)+",";//"255,"
+		}
+		else//i=2
+		{
+			rgbVal=Math.floor(Math.random()*256)+")";//0-255整数
+		}
+		colorVal+=rgbVal;	
+	}
+	
+	return colorVal;
+}*/
+
+function colorFun(){
+	var colorVal="#";
+	var arr=['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'];
+	for(var i=0;i<6;i++){
+		var num=Math.floor(Math.random()*16);//0-15整数
+		colorVal+=arr[num];//colorVal=colorVal+arr[num];
+	}
+	
+	return colorVal;
 }
 </script>
 </body>
